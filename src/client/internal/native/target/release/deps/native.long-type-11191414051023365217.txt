@@ -1,0 +1,2 @@
+rustls::ClientConfig: quinn::crypto::ClientConfig
+Arc<(dyn quinn::crypto::ClientConfig + 'static)>
