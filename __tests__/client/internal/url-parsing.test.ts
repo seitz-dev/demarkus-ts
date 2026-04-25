@@ -3,7 +3,7 @@ import { parseMarkUrl } from "../../../src/client/internal/url-parsing";
 import { DefaultPort } from "../../../src/protocol/protocol";
 
 test("test url parsing", () => {
-    const url = Bun.env.TEST_URL!;
+    const url = Bun.env.DEMARKUS_HUB_URL!;
     const markUrl = parseMarkUrl(url);
     
     expect(markUrl.host).toBe("hub.demarkus.io");

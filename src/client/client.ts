@@ -34,7 +34,7 @@ export class DemarkusClient {
         return connPtr as number;
     }
 
-    public async requestOnConn(markUrl: MarkUrl | string, verb: DemarkusVerb, token?: string): Promise<DemarkusResponse> {
+    public async request(markUrl: MarkUrl | string, verb: DemarkusVerb, token?: string, body?: any): Promise<DemarkusResponse> {
         if (typeof markUrl === 'string') {
             markUrl = parseMarkUrl(markUrl);
         }
@@ -46,7 +46,7 @@ export class DemarkusClient {
             path: markUrl.path
         }, {
             metaData: token ? { token } : {},
-            body: ''
+            body: body || ''
         });
 
         const targetHost = `${markUrl.host}:${markUrl.port || DefaultPort}`;
