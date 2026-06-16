@@ -1,7 +1,7 @@
-import { YAML } from "bun";
 import { DemarkusRequestHeader, type DemarkusRequestHeaderOpts } from "./header";
 import { DemarkusRequestPayload, type DemarkusRequestPayloadOpts } from "./payload";
-import { DemarkusProtocolUtilities } from "../protocol";
+import { DemarkusRequestSerializer } from "./serializer";
+import { DemarkusRequestParser } from "./parser";
 
 export class DemarkusRequest {
     private requestHeader: DemarkusRequestHeader;
@@ -37,44 +37,11 @@ export class DemarkusRequest {
     }
 
     static async parse(input: ReadableStream | Buffer | string): Promise<DemarkusRequest> {
-        // read header line
-        const data = await DemarkusProtocolUtilities.getDataFromStream(input);
-
-        const content = data.toString('utf-8');
-        const lines = content.split('\n');
-
-        if (lines.length === 0) {
-            throw new Error('Empty request');
-        }
-
-        const firstLine = lines[0];
-
-        if (!firstLine) {
-            throw new Error('Invalid request');
-        }
-
-        const header = DemarkusRequestHeader.parse(firstLine);
-        const dataStartIndex = data.indexOf('\n') + 1;
-        const body = DemarkusRequestPayload.parse(data.subarray(dataStartIndex).toString('utf-8'));
-
-        return new DemarkusRequest(header.opts, body);
+        return new DemarkusRequestParser().parse(input);
     }
 
     public serialize(): Buffer {
-        let output = `${this.verb} ${this.path}\n`;
-
-        if (this.metaData && Object.keys(this.metaData).length > 0) {
-            output += "---\n";
-            output += Bun.YAML.stringify(this.metaData).trim() + "\n";
-            output += "---\n";
-        }
-
-        if (this.body) {
-            output += this.body;
-            // If there's a body, we just send it as is
-        }
-
-        return Buffer.from(output, 'utf-8');
+        return new DemarkusRequestSerializer().serialize(this);
     }
 
     /** @internal */

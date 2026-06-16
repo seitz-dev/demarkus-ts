@@ -21,18 +21,18 @@ export class DemarkusRequestPayload {
 
         if (input.startsWith(FrontmatterStart)) {
             const rest = input.substring(FrontmatterStart.length);
-            const delimiterIndex = rest.indexOf(FrontmatterDelimiter, 4);
+            const delimiterIndex = rest.indexOf(FrontmatterDelimiter);
 
             if (delimiterIndex === -1) {
                 // check for closing --- at the very end
                 if (rest.endsWith('\n---')) {
-                    const fmContent = rest.slice(4, -3);
+                    const fmContent = rest.slice(0, -3).trim();
                     payload.metaData = YAML.parse(fmContent) as Record<string, string>;
                 } else {
                     throw new Error('Malformed request payload: missing frontmatter delimiter');
                 }
             } else {
-                const fmContent = rest.slice(4, delimiterIndex);
+                const fmContent = rest.slice(0, delimiterIndex).trim();
                 if (Buffer.byteLength(fmContent, 'utf-8') > DemarkusMaxRequestFrontmatterLength) {
                     throw new Error('Request payload frontmatter exceeds maximum length');
                 }
