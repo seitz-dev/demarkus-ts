@@ -6,7 +6,7 @@ import { DemarkusRequest } from "../protocol/request/request";
 import { DemarkusResponse } from "../protocol/response/response";
 import { DefaultPort } from "../protocol/protocol";
 import { DemarkusInvalidUrlError } from "./errors/DemarkusInvalidUrlError";
-import { ITransport } from "../transport/types";
+import type { ITransport } from "../transport/types";
 import { QuicTransport } from "../transport/quic/quic-transport";
 
 export class DemarkusClient {
